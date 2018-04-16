@@ -51,6 +51,7 @@ namespace Koxel
             SetupPaths();
             LoadGameConfig();
             SetupObjectPooler();
+            SetupThreadQueuer();
             SetupSaveManager();
             SetupWorld();
 
@@ -98,9 +99,13 @@ namespace Koxel
 
         private void CreateWorld()
         {
-            Debug.Log("Create world");
             World.Generator.loader = Camera.main.transform;
             World.Generator.ManageChunks();
+        }
+
+        private void CreatePlayer()
+        {
+
         }
     }
 }

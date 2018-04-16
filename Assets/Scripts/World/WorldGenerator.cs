@@ -16,6 +16,7 @@ namespace Koxel.World
         }
 
         Chunk currentChunk;
+        Vector3 currentCoords = new Vector3();
         public Transform loader;
 
         //Procedural Terrain
@@ -36,24 +37,38 @@ namespace Koxel.World
             if (loader != null)
             {
                 //TODO: calculate loaders position to the current chunk instead of raycast
-                RaycastHit hit;
-                if (Physics.Raycast(loader.position, -Vector3.up, out hit, Mathf.Infinity, 1 << 8))
+                Vector2 pixelCoords = new Vector2(loader.position.x, loader.position.z);
+                Vector3 hexCoords = HexMath.PixelToHex(pixelCoords.x, pixelCoords.y, Game.World.HexData);
+                //Tile(-33,-8) -> Chunk(-3,-1)
+                //-33/13 = -2.5 ~= -3, -8/13 = -0.6 ~= -1
+                int chunkSize = Game.GameConfig.chunkSize;
+                float x = Mathf.Round(hexCoords.x / chunkSize);
+                float z = Mathf.Round(hexCoords.y / chunkSize);
+                float y = Mathf.Round(hexCoords.z / chunkSize);
+                Vector3 chunkCoords = new Vector3(x, y, z);
+                Debug.Log(chunkCoords);
+                /*if (Game.World.Chunks.ContainsKey(chunkCoords))
                 {
-                    if (hit.collider.GetComponentInParent<HexTile>().chunk != currentChunk)
-                    {
-                        currentChunk = hit.collider.GetComponentInParent<HexTile>().chunk;
-                        Game.ThreadQueuer.StartThreadedFunction(ManageChunks);
-                    }
-                }
+                    Debug.Log("Exists");
+                    ChangeChunk(chunkCoords);
+                    //currentChunk = Game.World.Chunks[chunkCoords];
+                    //Game.ThreadQueuer.StartThreadedFunction(ManageChunks);
+                }*/
+                ChangeChunk(chunkCoords);
             }
 
             UpdateChunks();
         }
 
-        public void ChangeChunk(Chunk newChunk)
+        public void ChangeChunk(Vector3 newCoords)
         {
-            currentChunk = newChunk;
-            ManageChunks();
+            currentChunk = new Chunk()
+            {
+                coords = newCoords
+            };
+            currentCoords = currentChunk.coords;
+            Game.ThreadQueuer.StartThreadedFunction(ManageChunks);
+            //ManageChunks();
         }
 
         public void ManageChunks()
@@ -62,17 +77,17 @@ namespace Koxel.World
             {
                 currentChunk = new Chunk()
                 {
-                    coords = new Vector3()
+                    coords = currentCoords
                 };
             }
 
             int N = Game.GameConfig.renderDistance;
-            int xmin = (int)currentChunk.coords.x - N;
-            int ymin = (int)currentChunk.coords.y - N;
-            int zmin = (int)currentChunk.coords.z - N;
-            int xmax = (int)currentChunk.coords.x + N;
-            int ymax = (int)currentChunk.coords.y + N;
-            int zmax = (int)currentChunk.coords.z + N;
+            int xmin = (int)currentCoords.x - N;
+            int ymin = (int)currentCoords.y - N;
+            int zmin = (int)currentCoords.z - N;
+            int xmax = (int)currentCoords.x + N;
+            int ymax = (int)currentCoords.y + N;
+            int zmax = (int)currentCoords.z + N;
 
 
             List<Vector3> results = new List<Vector3>();
@@ -233,7 +248,7 @@ namespace Koxel.World
                 }
             }
 
-            int runs = 1; // load up to x chunks
+            int runs = 3; // load up to x chunks
             while (true)
             {
                 lock (loadChunks)
@@ -285,7 +300,6 @@ namespace Koxel.World
 
         public Chunk AddChunk(ChunkData chunkData)
         {
-            Debug.Log("AddChunk");
             Vector3 coords = new Vector3(chunkData.coords[0], chunkData.coords[1], chunkData.coords[2]);
             Vector3 pos = new Vector3(coords.x * Game.GameConfig.chunkSize * Game.World.HexData.Width + coords.y * (Game.GameConfig.chunkSize / 2f * Game.World.HexData.Width), 0, coords.y * Game.GameConfig.chunkSize * (.75f * Game.World.HexData.Height));
             GameObject chunkGO = Game.ObjectPooler.GetPooledObject("Chunk");
@@ -305,7 +319,6 @@ namespace Koxel.World
         }
         public Chunk AddChunk(Vector3 coords)
         {
-            Debug.Log("AddChunk");
             Vector3 pos = new Vector3(coords.x * Game.GameConfig.chunkSize * Game.World.HexData.Width + coords.y * (Game.GameConfig.chunkSize / 2f * Game.World.HexData.Width), 0, coords.y * Game.GameConfig.chunkSize * (.75f * Game.World.HexData.Height));
             GameObject chunkGO = Game.ObjectPooler.GetPooledObject("Chunk");
             chunkGO.transform.parent = Game.World.transform;

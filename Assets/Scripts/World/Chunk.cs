@@ -59,7 +59,7 @@ namespace Koxel.World
                     );
                     tileGO.transform.localPosition = pos;
                     tileGO.name = "Tile (" + xr + ", " + yq + ")";
-
+                    
                     /*if (pos.y < Game.World.waterThreshold)
                     {
                         tile.SetColor(Game.World.water);
@@ -123,7 +123,6 @@ namespace Koxel.World
                     tileGO.transform.localScale = tileGO.transform.localScale * Game.World.HexData.Size;
                     tileGO.name = "Tile (" + q + ", " + r + ")";
                     tileDatas.RemoveAt(0);
-
                     /*if (pos.y < Game.World.waterThreshold)
                     {
                         tile.SetColor(Game.World.water);
