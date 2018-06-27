@@ -148,8 +148,7 @@ namespace Koxel.World{
             float d1000 = simplex.Evaluate(x/1000f, y/1000f) / 2f;
             float result = (d10) + (d100) + (d1000);
 
-
-            float powered = Mathf.Pow(result, 2.5f);
+            float powered = Mathf.Sign(result) * Mathf.Pow(Mathf.Abs(result), 2.5f);
 
             float elevation = (result + powered);
 

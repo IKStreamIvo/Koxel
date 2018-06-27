@@ -19,7 +19,7 @@ namespace Koxel.World
 
         public void CreateIsland(){
             int seed = Random.Range(1, 1000000);
-            Island startIsland = new Island(seed, 32, 32);
+            Island startIsland = new Island(seed, 128, 128);
             Generator.Generate(startIsland);
         }
 
