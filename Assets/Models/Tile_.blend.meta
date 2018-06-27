@@ -1,39 +1,29 @@
 fileFormatVersion: 2
-guid: 8e39bcb4ea999534986133d2e32b8e1c
+guid: 07d731407441a2e4a82566f7c4f47325
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Tile
-    100004: Tile_coll
     400000: //RootNode
-    400002: Tile
-    400004: Tile_coll
     2100000: TileLine
     2100002: TileMat
     2300000: //RootNode
     3300000: //RootNode
     4300000: Tile
-    4300002: Tile_coll
     6400000: //RootNode
-    6400002: Tile
-    6400004: Tile_coll
     7400000: Default Take
     9500000: //RootNode
-    13700000: //RootNode
-    13700002: Tile
-    13700004: Tile_coll
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: TileLine
-    second: {fileID: 2100000, guid: 31b848710985cf9419ea11972063c2f3, type: 2}
+    second: {fileID: 2100000, guid: bf492bb4260657d42bae827a7e356e5e, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: TileMat
-    second: {fileID: 2100000, guid: 97a3be96c2cdd8143b1e75f1ff0f5bd9, type: 2}
+    second: {fileID: 2100000, guid: eb77ea45f3366aa4dae78f63edb06952, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -53,7 +43,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -61,16 +51,16 @@ ModelImporter:
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations: []
-    isReadable: 0
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
     addColliders: 1
-    importVisibility: 0
+    importVisibility: 1
     importBlendShapes: 1
-    importCameras: 0
-    importLights: 0
+    importCameras: 1
+    importLights: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -89,7 +79,7 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
@@ -108,7 +98,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

@@ -1,0 +1,16 @@
+{
+    "name": "Koxel Core",
+    "version": "v0.0.1",
+    "authors":[
+        {
+            "name": "IKStreamIvo",
+            "title": "Programmer",
+            "link": "https://github.com/IKStreamIvo"
+        }, 
+        {
+            "name": "kokonus",
+            "title": "mind-person/useless guy",
+            "link": ""
+        }
+    ]
+}

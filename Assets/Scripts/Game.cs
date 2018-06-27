@@ -5,6 +5,7 @@ using Koxel.World;
 using Newtonsoft.Json;
 using System.IO;
 using Koxel.Tech;
+using Koxel.Modding;
 
 namespace Koxel
 {
@@ -30,6 +31,11 @@ namespace Koxel
         /// 'Multithreading' by Quil18
         /// </summary>
         public static ThreadQueuer ThreadQueuer { get; private set; }
+        
+        /// <summary>
+        /// Manages mod parts and stores all references.
+        /// </summary>
+        public static ModManager ModManager { get; private set; }
 
         /// <summary>
         /// GameConfig manages contains all configurable settings for the game.
@@ -43,6 +49,7 @@ namespace Koxel
         #endregion
         #region Editor Configs
         public GameObject ChunkPrefab;
+        public GameObject TilePrefab;
         #endregion
 
         private void Start()
@@ -55,8 +62,11 @@ namespace Koxel
             SetupSaveManager();
             SetupWorld();
 
+            ///MODDINGGGG
+            LoadMods();
+
             ///Start Game
-            CreateWorld();
+            //CreateWorld();
         }
 
         private void SetupPaths()
@@ -88,20 +98,41 @@ namespace Koxel
             ThreadQueuer = gameObject.AddComponent<ThreadQueuer>();
         }
         
-        private void SetupWorld()
+        private void LoadMods()
         {
-            GameObject WorldGO = new GameObject("World");
-            World = WorldGO.AddComponent<WorldManager>();
+            ModManager = new ModManager();
 
-            //Setup Chunk object pooling
-            ObjectPooler.RegisterObject("Chunk", ChunkPrefab, GameConfig.renderDistance);
+            ModManager.SetupAllMods();
+            ModManager.SetupComponents();
+
+            foreach (ModManager.Component comp in ModManager.Components.Keys)
+            {
+                Dictionary<string, IModComponent> dict = ModManager.Components[comp];
+                foreach (string tag in dict.Keys)
+                {
+                    IModComponent compo = dict[tag];
+                    //Get the interface type with: compo.GetType(); and switch case over it
+                    Debug.Log(ModManager.Components[comp][tag].display);
+                }
+            }
         }
 
-        private void CreateWorld()
+        private void SetupWorld()
+        {
+            //Setup Chunk object pooling
+            //ObjectPooler.RegisterObject("Chunk", ChunkPrefab, GameConfig.renderDistance);
+            ObjectPooler.RegisterObject("Tile", TilePrefab, 250);
+
+            GameObject WorldGO = new GameObject("World");
+            World = WorldGO.AddComponent<WorldManager>();
+            World.CreateIsland();
+        }
+
+        /*private void CreateWorld()
         {
             World.Generator.loader = Camera.main.transform;
             World.Generator.ManageChunks();
-        }
+        }*/
 
         private void CreatePlayer()
         {

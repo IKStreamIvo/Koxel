@@ -13,15 +13,23 @@ namespace Koxel.World
         public string tileType;
 
         private MaterialPropertyBlock _propBlock;
-        private Renderer _renderer;
+        private SkinnedMeshRenderer _renderer;
+        private MeshCollider _collider;
 
         private void Awake()
         {
+            _collider = GetComponentInChildren<MeshCollider>();
             _propBlock = new MaterialPropertyBlock();
-            _renderer = GetComponent<Renderer>();
+            _renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
             biome = "hi";
             tileType = "cutie";
+        }
+
+        public void SetSize(float height)
+        {
+            _collider.transform.localScale = new Vector3(1f, Mathf.Abs(height + 1f) * 2f, 1f);
+            _renderer.SetBlendShapeWeight(0, Mathf.Abs(height) * 2f);
         }
 
         public void SetColor(Color color)

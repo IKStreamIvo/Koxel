@@ -36,7 +36,6 @@ namespace Koxel.World
         {
             if (loader != null)
             {
-                //TODO: calculate loaders position to the current chunk instead of raycast
                 Vector2 pixelCoords = new Vector2(loader.position.x, loader.position.z);
                 Vector3 hexCoords = HexMath.PixelToHex(pixelCoords.x, pixelCoords.y, Game.World.HexData);
                 //Tile(-33,-8) -> Chunk(-3,-1)
@@ -46,14 +45,7 @@ namespace Koxel.World
                 float z = Mathf.Round(hexCoords.y / chunkSize);
                 float y = Mathf.Round(hexCoords.z / chunkSize);
                 Vector3 chunkCoords = new Vector3(x, y, z);
-                Debug.Log(chunkCoords);
-                /*if (Game.World.Chunks.ContainsKey(chunkCoords))
-                {
-                    Debug.Log("Exists");
-                    ChangeChunk(chunkCoords);
-                    //currentChunk = Game.World.Chunks[chunkCoords];
-                    //Game.ThreadQueuer.StartThreadedFunction(ManageChunks);
-                }*/
+                
                 ChangeChunk(chunkCoords);
             }
 

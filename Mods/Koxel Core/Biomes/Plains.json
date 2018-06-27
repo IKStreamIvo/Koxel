@@ -1,0 +1,11 @@
+{
+    "tag": "grassplains",
+    "display": "Plains",
+
+    "height": [
+        {
+            "lacunarity": 2, //freq = lac^ocatave
+            "persistance": 0.5 //amp = pers^ocatave
+        }
+    ]
+}

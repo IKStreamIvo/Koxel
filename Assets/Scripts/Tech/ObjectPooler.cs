@@ -74,6 +74,7 @@ namespace Koxel.Tech
 
                 return foundObj;
             }
+            Debug.LogError("ObjectPooler: No pooled objects with the tag '" + tag + "' found.");
             return null;
         }
 

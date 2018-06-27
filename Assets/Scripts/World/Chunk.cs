@@ -54,7 +54,7 @@ namespace Koxel.World
 
                     Vector3 pos = new Vector3(
                         tileGO.transform.localPosition.x,
-                        0f,//Game.World.HeightMap2(tile),
+                        0,//Game.World.HeightMap(tile),
                         tileGO.transform.localPosition.z
                     );
                     tileGO.transform.localPosition = pos;
@@ -116,7 +116,7 @@ namespace Koxel.World
 
                     Vector3 pos = new Vector3(
                         tileGO.transform.localPosition.x,
-                        0f,//Game.World.HeightMap2(tile),
+                        0,//Game.World.HeightMap(tile),
                         tileGO.transform.localPosition.z
                     );
                     tileGO.transform.localPosition = pos;
@@ -148,13 +148,8 @@ namespace Koxel.World
             {
                 for (int q = -Game.GameConfig.chunkSize / 2; q <= Game.GameConfig.chunkSize / 2; q++)
                 {
-                    Vector3 pos = new Vector3(
-                        r * Game.World.HexData.Width + q * (.5f * Game.World.HexData.Width),
-                        0,
-                        q * (Game.World.HexData.Height * .75f)
-                    );
+
                     GameObject tileGO = Instantiate(tilePrefab, transform);
-                    tileGO.transform.localPosition = pos;
                     tileGO.transform.localScale = tileGO.transform.localScale * Game.World.HexData.Size;
                     tileGO.name = "Tile (" + q + ", " + r + ")";
                     HexTile tile = tileGO.GetComponent<HexTile>();
@@ -164,6 +159,14 @@ namespace Koxel.World
                     tile.tileType = "randomTileType";
                     tile.SetColor(new Color(0, .5f, 0, .5f));
                     tiles.Add(new Vector3(r, q, -r - q), tile);
+
+                    Vector3 pos = new Vector3(
+                        r * Game.World.HexData.Width + q * (.5f * Game.World.HexData.Width),
+                        0,//Game.World.HeightMap(tile),
+                        q * (Game.World.HexData.Height * .75f)
+                    );
+
+                    tileGO.transform.localPosition = pos;
                 }
             }
             hasGenerated = true;
@@ -175,13 +178,7 @@ namespace Koxel.World
             {
                 for (int q = -Game.GameConfig.chunkSize / 2; q <= Game.GameConfig.chunkSize / 2; q++)
                 {
-                    Vector3 pos = new Vector3(
-                        r * Game.World.HexData.Width + q * (.5f * Game.World.HexData.Width),
-                        0,
-                        q * (Game.World.HexData.Height * .75f)
-                    );
                     GameObject tileGO = Instantiate(tilePrefab, transform);
-                    tileGO.transform.localPosition = pos;
                     tileGO.transform.localScale = tileGO.transform.localScale * Game.World.HexData.Size;
                     tileGO.name = "Tile (" + q + ", " + r + ")";
                     HexTile tile = tileGO.GetComponent<HexTile>();
@@ -192,6 +189,16 @@ namespace Koxel.World
                     tileDatas.RemoveAt(0);
                     tile.SetColor(new Color(0, .5f, 0, .5f));
                     tiles.Add(new Vector3(r, q, -r - q), tile);
+
+                    Vector3 pos = new Vector3(
+                        r * Game.World.HexData.Width + q * (.5f * Game.World.HexData.Width),
+                        0,//Game.World.HeightMap(tile),
+                        q * (Game.World.HexData.Height * .75f)
+                    );
+
+
+                    tileGO.transform.localPosition = pos;
+
                 }
             }
             hasGenerated = true;

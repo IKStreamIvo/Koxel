@@ -2,27 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Koxel.Tech;
+using SimplexNoise;
 
 namespace Koxel.World
 {
     public class WorldManager : MonoBehaviour
     {
-        public WorldGenerator Generator; 
-        public Dictionary<Vector3, Chunk> Chunks;
-        //public Dictionary<Vector3, HexTile> Tiles;
+        public IslandGenerator Generator; 
         public HexData HexData { get; private set; }
-        
+
         private void Awake()
         {
+            Generator = new IslandGenerator();
             HexData = new HexData(Game.GameConfig.hexSize);
-            Chunks = new Dictionary<Vector3, Chunk>();
-            //Tiles = new Dictionary<Vector3, HexTile>();
-            Generator = new WorldGenerator(Chunks);
+        }
+
+        public void CreateIsland(){
+            int seed = Random.Range(1, 1000000);
+            Island startIsland = new Island(seed, 32, 32);
+            Generator.Generate(startIsland);
         }
 
         private void Update()
         {
-            Generator.Update();
+            //Generator.Update();
         }
     }
 }
