@@ -2,18 +2,19 @@ using System.Collections.Generic;
 using System.Text;
 using Koxel.Tech;
 using UnityEngine;
+using SimplexNoise;
 
 namespace Koxel.World{
     public class IslandGenerator {
         HexData HexData;
+        Simplex Simplex;
 
         public IslandGenerator(){
             HexData = new HexData(Game.GameConfig.hexSize);
         }
 
         public Island Generate(Island island){
-            SimplexNoise.Simplex simplex = new SimplexNoise.Simplex(island.seed);
-
+            Simplex = new SimplexNoise.Simplex(island.seed);
             //Square
             /*for (int q = -island.width/2; q < island.width/2; q++)
             {
@@ -27,30 +28,30 @@ namespace Koxel.World{
                     tileGO.SetActive(true);
                     Vector3 pos = new Vector3(
                         q * HexData.Width + r * (.5f * HexData.Width),
-                        Noise(q, r, simplex, island.width, island.height),
+                        Noise(q, r, simplex),
                         r * (HexData.Height * .75f)
                     );
                     tileGO.transform.localPosition = pos;
 
                     //Get lowest neighbour
                     float lowestHeight = Mathf.Infinity;
-                    if(Noise(q - 1, r + 1, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q-1, r+1, simplex, island.width, island.height);
+                    if(Noise(q - 1, r + 1, simplex) < lowestHeight){
+                        lowestHeight = Noise(q-1, r+1, simplex);
                     }
-                    if(Noise(q, r + 1, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q, r+1, simplex, island.width, island.height);
+                    if(Noise(q, r + 1, simplex) < lowestHeight){
+                        lowestHeight = Noise(q, r+1, simplex);
                     }
-                    if(Noise(q + 1, r, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q+1, r, simplex, island.width, island.height);
+                    if(Noise(q + 1, r, simplex) < lowestHeight){
+                        lowestHeight = Noise(q+1, r, simplex);
                     }
-                    if(Noise(q + 1, r - 1, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q+1, r-1, simplex, island.width, island.height);
+                    if(Noise(q + 1, r - 1, simplex) < lowestHeight){
+                        lowestHeight = Noise(q+1, r-1, simplex);
                     }
-                    if(Noise(q, r - 1, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q, r-1, simplex, island.width, island.height);
+                    if(Noise(q, r - 1, simplex) < lowestHeight){
+                        lowestHeight = Noise(q, r-1, simplex);
                     }
-                    if(Noise(q - 1, r, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q-1, r, simplex, island.width, island.height);
+                    if(Noise(q - 1, r, simplex) < lowestHeight){
+                        lowestHeight = Noise(q-1, r, simplex);
                     }
                     if(lowestHeight == Mathf.Infinity){
                         lowestHeight = pos.y;
@@ -79,96 +80,82 @@ namespace Koxel.World{
                 }
             }*/
             
-            List<GameObject> water = new List<GameObject>();
             //Generate Rectangle
             for (int r = -island.height/2; r < island.height/2; r++)
             {
                 int r_offset = (int) Mathf.Floor(r/2f);
                 for (int q = -r_offset - island.width/2; q < island.width/2 - r_offset; q++)
                 {
-                    GameObject tileGO = Game.ObjectPooler.GetPooledObject("Tile");
-                    tileGO.transform.SetParent(Game.World.transform);
-                    tileGO.transform.localScale = tileGO.transform.localScale * HexData.Size;
-                    tileGO.name = "Tile (" + r + ", " + q + ")";
-                    HexTile tile = tileGO.GetComponent<HexTile>();
-                    tileGO.SetActive(true);
-                    Vector3 pos = new Vector3(
-                        q * HexData.Width + r * (.5f * HexData.Width),
-                        Noise(q, r, simplex, island.width, island.height),
-                        r * (HexData.Height * .75f)
-                    );
-                    tileGO.transform.localPosition = pos;
-
-                    //Get lowest neighbour
-                    float lowestHeight = Mathf.Infinity;
-                    if(Noise(q - 1, r + 1, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q-1, r+1, simplex, island.width, island.height);
-                    }
-                    if(Noise(q, r + 1, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q, r+1, simplex, island.width, island.height);
-                    }
-                    if(Noise(q + 1, r, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q+1, r, simplex, island.width, island.height);
-                    }
-                    if(Noise(q + 1, r - 1, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q+1, r-1, simplex, island.width, island.height);
-                    }
-                    if(Noise(q, r - 1, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q, r-1, simplex, island.width, island.height);
-                    }
-                    if(Noise(q - 1, r, simplex, island.width, island.height) < lowestHeight){
-                        lowestHeight = Noise(q-1, r, simplex, island.width, island.height);
-                    }
-                    if(lowestHeight == Mathf.Infinity){
-                        lowestHeight = pos.y;
-                    }
-                    
-                    tile.SetSize((lowestHeight - pos.y));
-
-                    if(tile.transform.localPosition.y == 0f){
-                        tile.SetColor(new Color(0.3970588f, 0.3970588f, 1f, 1f));
-                        water.Add(tileGO);
-                    }
-                    else 
-                    {
-                        tile.SetColor(new Color(0f, 0.553f, 0f, .5f));
-                    }
+                    CreateTile(q, r);
                 }
-            }
-            foreach (GameObject tile in water)
-            {
-                Game.ObjectPooler.PoolObject(tile);
             }
             return island;
         }
 
-        private float Noise(int x, int y, SimplexNoise.Simplex simplex, int width, int height){
-            float d10 = simplex.Evaluate(x/10f, y/10f);
-            float d100 = simplex.Evaluate(x/100f, y/100f);
-            float d1000 = simplex.Evaluate(x/1000f, y/1000f) / 2f;
-            float result = (d10) + (d100) + (d1000);
-
+        private float Noise(int x, int y){
+            //note: X should be smaller then Y to increase roundness
+            float result = 0f;
+            result += Simplex.Evaluate(x/5f, y/3.5f) / 7f;//detail noise
+            result += Simplex.Evaluate(x/11f, y/15f) / 1f;//smaller hills (/.5f for more spikes)
+            result += Simplex.Evaluate(x/35f, y/50f) / 1.5f;//larger hills
+            
             float powered = Mathf.Sign(result) * Mathf.Pow(Mathf.Abs(result), 2.5f);
 
             float elevation = (result + powered);
 
-            //Island Mask
-            float distance_x = Mathf.Abs(x);
-            float distance_y = Mathf.Abs(y);
-            float distance = Mathf.Sqrt(distance_x * distance_x + distance_y * distance_y) / 1.25f; // circular mask
-            float max_width = (width/2.5f) - 10.0f;
-            float delta = distance / max_width;
-            float gradient = delta * delta;
+            //Redblob's island function
+            float a = 3f;
+            float b = 0.01f;
+            float d = Mathf.Sqrt(x * x + y * y);
+            float c = 1.5f;
+            elevation = elevation + a - b * Mathf.Pow(d, c);
 
-            elevation *= Mathf.Max(0.0f, 1.0f - gradient);
+            elevation = elevation/5f;
+
             if(elevation < 0f)
-            elevation = 0f;
+                elevation = 0f;
 
-            if (float.IsNaN(elevation)){
-                Debug.Log(elevation + ", " + gradient + ", " + max_width + ", " + distance_x + ", " + distance_y + ", " + result + ", " + powered + ", " + (result + powered));   
+            return elevation * 80f;
+        }
+
+        private void CreateTile(int q, int r){
+            float noiseHeight = Noise(q, r);
+            if(noiseHeight == 0f)
+                return;
+
+            GameObject tileGO = Game.ObjectPooler.GetPooledObject("Tile");
+            tileGO.name = "Tile (" + r + ", " + q + ")";
+            tileGO.transform.SetParent(Game.World.transform);
+            tileGO.transform.localScale = tileGO.transform.localScale * HexData.Size;
+            Vector3 pos = new Vector3(
+                q * HexData.Width + r * (.5f * HexData.Width),
+                noiseHeight,
+                r * (HexData.Height * .75f)
+            );
+            tileGO.transform.localPosition = pos;
+
+            HexTile tile = tileGO.GetComponent<HexTile>();
+
+            //Set height
+            float lowestNeighbour = Mathf.Infinity;
+            List<float> neighbourNoise = new List<float>(){ //arg theyre so loud!
+                Noise(q-1, r+1), Noise(q, r+1), Noise(q+1, r),
+                Noise(q+1, r-1), Noise(q, r-1), Noise(q-1, r)
+            };
+            foreach(float neighbour in neighbourNoise){
+                if(neighbour < lowestNeighbour){
+                    lowestNeighbour = neighbour;
+                }
             }
+            if(lowestNeighbour == Mathf.Infinity){
+                lowestNeighbour = pos.y;
+            }
+            tile.SetSize((lowestNeighbour - pos.y));
 
-            return elevation * 100f;
+            //Green grass
+            tile.SetColor(new Color(0f, 0.553f, 0f, .5f));
+
+            tileGO.SetActive(true);
         }
     }
 }
