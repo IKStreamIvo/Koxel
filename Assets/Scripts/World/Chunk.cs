@@ -157,7 +157,7 @@ namespace Koxel.World
                     tile.chunk = this;
                     tile.biome = "randomBiome";
                     tile.tileType = "randomTileType";
-                    tile.SetColor(new Color(0, .5f, 0, .5f));
+                    //tile.SetColor(new Color(0, .5f, 0, .5f));
                     tiles.Add(new Vector3(r, q, -r - q), tile);
 
                     Vector3 pos = new Vector3(
@@ -187,7 +187,7 @@ namespace Koxel.World
                     tile.biome = tileDatas[0].biome;
                     tile.tileType = tileDatas[0].tileType;
                     tileDatas.RemoveAt(0);
-                    tile.SetColor(new Color(0, .5f, 0, .5f));
+                    //tile.SetColor(new Color(0, .5f, 0, .5f));
                     tiles.Add(new Vector3(r, q, -r - q), tile);
 
                     Vector3 pos = new Vector3(

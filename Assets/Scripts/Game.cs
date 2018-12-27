@@ -46,10 +46,17 @@ namespace Koxel
         /// Path to the Game's folder.
         /// </summary>
         public static string GamePath { get; private set; }
+        
+        /// <summary>
+        /// Reference to the current player.
+        /// </summary>
+        public static Player Player { get; private set; }
         #endregion
+        
         #region Editor Configs
         public GameObject ChunkPrefab;
         public GameObject TilePrefab;
+        public GameObject PlayerPrefab;
         #endregion
 
         private void Start()
@@ -66,7 +73,7 @@ namespace Koxel
             LoadMods();
 
             ///Start Game
-            //CreateWorld();
+            CreateWorld();
         }
 
         private void SetupPaths()
@@ -112,7 +119,7 @@ namespace Koxel
                 {
                     IModComponent compo = dict[tag];
                     //Get the interface type with: compo.GetType(); and switch case over it
-                    Debug.Log(ModManager.Components[comp][tag].display);
+                    //Debug.Log(ModManager.Components[comp][tag].display);
                 }
             }
         }
@@ -125,18 +132,44 @@ namespace Koxel
 
             GameObject WorldGO = new GameObject("World");
             World = WorldGO.AddComponent<WorldManager>();
-            World.CreateIsland();
         }
 
-        /*private void CreateWorld()
+        private void CreateWorld()
         {
-            World.Generator.loader = Camera.main.transform;
-            World.Generator.ManageChunks();
-        }*/
+            World.CreateIsland();
+            //World.Generator.loader = Camera.main.transform;
+            //World.Generator.ManageChunks();
+        }
 
         private void CreatePlayer()
         {
 
+        }
+
+        public enum Systems{
+            Game, ModManager, WorldManager, IslandGenerator, Player
+        }
+        public static void Error(Systems system, string error){
+            string errorText = "";
+            switch(system){
+                case Systems.Game:
+                    errorText += "[Game] ";
+                    break;
+                case Systems.ModManager:
+                    errorText += "[ModManager] ";
+                    break;
+                case Systems.WorldManager:
+                    errorText += "[WorldManager] ";
+                    break;
+                case Systems.IslandGenerator:
+                    errorText += "[IslandGenerator] ";
+                    break;
+                case Systems.Player:
+                    errorText += "[Player] ";
+                    break;
+            }
+            errorText += error;
+            Debug.LogError(errorText);
         }
     }
 }

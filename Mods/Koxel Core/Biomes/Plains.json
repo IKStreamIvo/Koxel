@@ -2,10 +2,191 @@
     "tag": "grassplains",
     "display": "Plains",
 
-    "height": [
+    "elevation": {
+        "value": {
+            "type": "/",
+            "args": [
+                {
+                    "type": "+",
+                    "args": [
+                        {
+                            "_comment": "Evalute chain",
+                            "type": "+",
+                            "args": [
+                                {
+                                    "type": "/",
+                                    "args": [
+                                        {
+                                            "type": "simplex",
+                                            "args": [
+                                                5,
+                                                3.5
+                                            ]
+                                        },
+                                        7
+                                    ]
+                                },
+                                {
+                                    "type": "/",
+                                    "args": [
+                                        {
+                                            "type": "simplex",
+                                            "args": [
+                                                11,
+                                                15
+                                            ]
+                                        },
+                                        1
+                                    ]
+                                },
+                                {
+                                    "type": "/",
+                                    "args": [
+                                        {
+                                            "type": "simplex",
+                                            "args": [
+                                                35,
+                                                50
+                                            ]
+                                        },
+                                        1.5
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "_comment": "Pow",
+                            "type": "pow",
+                            "args": [
+                                {
+                                    "_comment": "Evalute chain",
+                                    "type": "+",
+                                    "args": [
+                                        {
+                                            "type": "/",
+                                            "args": [
+                                                {
+                                                    "type": "simplex",
+                                                    "args": [
+                                                        5,
+                                                        3.5
+                                                    ]
+                                                },
+                                                7
+                                            ]
+                                        },
+                                        {
+                                            "type": "/",
+                                            "args": [
+                                                {
+                                                    "type": "simplex",
+                                                    "args": [
+                                                        11,
+                                                        15
+                                                    ]
+                                                },
+                                                1
+                                            ]
+                                        },
+                                        {
+                                            "type": "/",
+                                            "args": [
+                                                {
+                                                    "type": "simplex",
+                                                    "args": [
+                                                        35,
+                                                        50
+                                                    ]
+                                                },
+                                                1.5
+                                            ]
+                                        }
+                                    ]
+                                },
+                                2.5
+                            ]
+                        },
+                        {
+                            "_comment": "Islands",
+                            "type": "-",
+                            "args": [
+                                3,
+                                {
+                                    "type": "*",
+                                    "args": [
+                                        0.01,
+                                        {
+                                            "type": "pow",
+                                            "args": [
+                                                {
+                                                    "type": "sqrt",
+                                                    "args": {
+                                                        "type": "+",
+                                                        "args": [
+                                                            {
+                                                                "type": "*",
+                                                                "args": [
+                                                                    3,
+                                                                    3
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "*",
+                                                                "args": [
+                                                                    0.01,
+                                                                    0.01
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                1.5
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                5
+            ]
+        }
+    },
+
+    "tiles": [
         {
-            "lacunarity": 2, //freq = lac^ocatave
-            "persistance": 0.5 //amp = pers^ocatave
+            "type": "main",
+            "layers": [
+                {
+                    "tag": "grass",
+                    "size": 0.2
+                },
+                {
+                    "tag": "dirt",
+                    "size": 0.4
+                },
+                {
+                    "tag": "stone",
+                    "size": 0.4
+                }
+            ],
+            "_comment": "All sizes combined should be 1.0"
+        },
+        {
+            "type": "patches",
+            "patches": {
+            },
+            "layers": [
+                {
+                    "tag": "dirt",
+                    "size": 0.4
+                },
+                {
+                    "tag": "stone",
+                    "size": 0.6
+                }
+            ]
         }
     ]
 }

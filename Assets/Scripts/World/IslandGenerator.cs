@@ -7,7 +7,7 @@ using SimplexNoise;
 namespace Koxel.World{
     public class IslandGenerator {
         HexData HexData;
-        Simplex Simplex;
+        public static Simplex Simplex;
 
         public IslandGenerator(){
             HexData = new HexData(Game.GameConfig.hexSize);
@@ -15,6 +15,7 @@ namespace Koxel.World{
 
         public Island Generate(Island island){
             Simplex = new SimplexNoise.Simplex(island.seed);
+            Game.World.islandMap = new Dictionary<Vector2Int, HexTile>();
             //Square
             /*for (int q = -island.width/2; q < island.width/2; q++)
             {
@@ -81,12 +82,10 @@ namespace Koxel.World{
             }*/
             
             //Generate Rectangle
-            for (int r = -island.height/2; r < island.height/2; r++)
-            {
+            for (int r = -island.height/2; r < island.height/2; r++){
                 int r_offset = (int) Mathf.Floor(r/2f);
-                for (int q = -r_offset - island.width/2; q < island.width/2 - r_offset; q++)
-                {
-                    CreateTile(q, r);
+                for (int q = -r_offset - island.width/2; q < island.width/2 - r_offset; q++){
+                    CreateTile(q, r, island);
                 }
             }
             return island;
@@ -95,12 +94,10 @@ namespace Koxel.World{
         private float Noise(int x, int y){
             //note: X should be smaller then Y to increase roundness
             float result = 0f;
-            result += Simplex.Evaluate(x/5f, y/3.5f) / 7f;//detail noise
-            result += Simplex.Evaluate(x/11f, y/15f) / 1f;//smaller hills (/.5f for more spikes)
-            result += Simplex.Evaluate(x/35f, y/50f) / 1.5f;//larger hills
-            
-            float powered = Mathf.Sign(result) * Mathf.Pow(Mathf.Abs(result), 2.5f);
-
+            result += Simplex.Evaluate(x/5f, y/3.5f) / 7f;
+            result += Simplex.Evaluate(x/11f, y/15f) / 1f;
+            result += Simplex.Evaluate(x/35f, y/50f) / 1.5f;
+            float powered = Mathf.Pow(Mathf.Abs(result), 2.5f);
             float elevation = (result + powered);
 
             //Redblob's island function
@@ -108,9 +105,10 @@ namespace Koxel.World{
             float b = 0.01f;
             float d = Mathf.Sqrt(x * x + y * y);
             float c = 1.5f;
-            elevation = elevation + a - b * Mathf.Pow(d, c);
+            float islands = a - b * Mathf.Pow(d, c);
+            elevation = elevation + islands;
 
-            elevation = elevation/5f;
+            elevation = elevation / 5f;
 
             if(elevation < 0f)
                 elevation = 0f;
@@ -118,9 +116,10 @@ namespace Koxel.World{
             return elevation * 80f;
         }
 
-        private void CreateTile(int q, int r){
-            float noiseHeight = Noise(q, r);
-            if(noiseHeight == 0f)
+        private void CreateTile(int q, int r, Island island){
+            float stepSize = island.stepSize * 2f + 1f;
+            float noiseHeight = island.biome.elevation.Get(q, r);//Noise(q, r);
+            if(Mathf.Round(noiseHeight/stepSize) * stepSize == 0f)
                 return;
 
             GameObject tileGO = Game.ObjectPooler.GetPooledObject("Tile");
@@ -129,7 +128,7 @@ namespace Koxel.World{
             tileGO.transform.localScale = tileGO.transform.localScale * HexData.Size;
             Vector3 pos = new Vector3(
                 q * HexData.Width + r * (.5f * HexData.Width),
-                noiseHeight,
+                Mathf.Round(noiseHeight/stepSize) * stepSize,
                 r * (HexData.Height * .75f)
             );
             tileGO.transform.localPosition = pos;
@@ -139,8 +138,8 @@ namespace Koxel.World{
             //Set height
             float lowestNeighbour = Mathf.Infinity;
             List<float> neighbourNoise = new List<float>(){ //arg theyre so loud!
-                Noise(q-1, r+1), Noise(q, r+1), Noise(q+1, r),
-                Noise(q+1, r-1), Noise(q, r-1), Noise(q-1, r)
+                island.biome.elevation.Get(q-1, r+1), island.biome.elevation.Get(q, r+1), island.biome.elevation.Get(q+1, r),
+                island.biome.elevation.Get(q+1, r-1), island.biome.elevation.Get(q, r-1), island.biome.elevation.Get(q-1, r)
             };
             foreach(float neighbour in neighbourNoise){
                 if(neighbour < lowestNeighbour){
@@ -150,12 +149,13 @@ namespace Koxel.World{
             if(lowestNeighbour == Mathf.Infinity){
                 lowestNeighbour = pos.y;
             }
-            tile.SetSize((lowestNeighbour - pos.y));
+            tile.SetSize(Mathf.Round((lowestNeighbour - pos.y)/stepSize) * stepSize);
 
             //Green grass
-            tile.SetColor(new Color(0f, 0.553f, 0f, .5f));
+            tile.SetColor(new Color(0f, 0.553f, 0f, .5f), Color.black, new List<Color>{new Color(0f, 0.553f, 0f, .5f)});
 
             tileGO.SetActive(true);
+            Game.World.islandMap.Add(new Vector2Int(q, r), tile);
         }
     }
 }
